@@ -62,10 +62,3 @@ jobs:
           package_path="${GITHUB_WORKSPACE}/packages/${dirname}"
           mkdir -p "${package_path}"
           mv ../*.deb "${package_path}"
-      - name: Publish packages to cloudsmith
-        uses: wanduow/action-cloudsmith-upload-packages@v1
-        with:
-          path: packages/
-          repo: wand/systemd-named-netns
-          username: brad-cowie
-          api_key: ${{ secrets.CLOUDSMITH_API_KEY }}
