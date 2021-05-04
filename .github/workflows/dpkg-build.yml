@@ -54,9 +54,14 @@ jobs:
           apt-get update
           apt-get -y upgrade
           apt-get -y install devscripts dpkg-dev debhelper equivs
-          mk-build-deps -i -r -t 'apt-get -f -y --force-yes'
+      - name: Remove dh-systemd from build dependencies
+        run: |
+          if dpkg --compare-versions "$(dpkg-query --showformat='${Version}' --show debhelper)" ge 13.3; then
+            sed -i 's/Build-Depends: debhelper (>= 9), dh-systemd/Build-Depends: debhelper (>= 9)/' debian/control
+          fi
       - name: Build package
         run: |
+          mk-build-deps -i -r -t 'apt-get -f -y --force-yes'
           dpkg-buildpackage -b -us -uc -rfakeroot
           dirname=$(echo ${{ matrix.target }} | tr ':' '_')
           package_path="${GITHUB_WORKSPACE}/packages/${dirname}"
